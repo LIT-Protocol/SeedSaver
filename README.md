@@ -5,7 +5,7 @@ SeedSaver by [Lit](https://litprotocol.com) helps you securely store photos of y
 ## Installation
 
 1. Install Expo Go from the app store on your device: https://expo.dev/go
-2. Go to this link and scan this QR code: https://expo.dev/preview/update?message=cleanup%20of%20layout&updateRuntimeVersion=1.0.0&createdAt=2024-11-27T04%3A52%3A52.481Z&slug=exp&projectId=f9849ac7-b8a8-4c28-bec9-e40e18a13e31&group=52fb4f86-d9f9-4af3-b6e9-011349bf0139
+2. Go to this link and scan this QR code: https://expo.dev/preview/update?message=update%20best%20practices&updateRuntimeVersion=1.0.0&createdAt=2024-11-27T04%3A55%3A57.448Z&slug=exp&projectId=f9849ac7-b8a8-4c28-bec9-e40e18a13e31&group=2be09e57-296c-4f92-94b6-7c6671727de0
 
 ## Why
 
