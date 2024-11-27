@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Linking,
+  SafeAreaView,
 } from "react-native";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
@@ -157,88 +158,97 @@ export default function HomeScreen() {
   }
 
   return (
-    <ScrollView>
-      <ThemedView style={styles.header}>
-        <TouchableOpacity
-          onPress={() => Linking.openURL("https://litprotocol.com")}
-          style={styles.logoContainer}
-        >
-          <Image
-            source={require("../../assets/images/lit.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() =>
-            Linking.openURL("https://github.com/lit-protocol/seedsaver")
-          }
-          style={styles.sourceLink}
-        >
-          <ThemedText>Source Code</ThemedText>
-        </TouchableOpacity>
-      </ThemedView>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView>
+        <ThemedView style={styles.header}>
+          <TouchableOpacity
+            onPress={() => Linking.openURL("https://litprotocol.com")}
+            style={styles.logoContainer}
+          >
+            <Image
+              source={require("../../assets/images/lit.png")}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL("https://github.com/lit-protocol/seedsaver")
+            }
+            style={styles.sourceLink}
+          >
+            <ThemedText>Source Code</ThemedText>
+          </TouchableOpacity>
+        </ThemedView>
 
-      <ThemedView style={styles.cameraContainer}>
-        {photo ? (
-          <View style={styles.preview}>
-            <Image source={{ uri: photo }} style={styles.previewImage} />
-            <View style={styles.passwordContainer}>
-              <ThemedText type="subtitle">Set Encryption Password</ThemedText>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter password"
-                placeholderTextColor="#666"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Confirm password"
-                placeholderTextColor="#666"
-                secureTextEntry
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
+        <ThemedView style={styles.cameraContainer}>
+          {photo ? (
+            <View style={styles.preview}>
+              <Image source={{ uri: photo }} style={styles.previewImage} />
+              <View style={styles.passwordContainer}>
+                <ThemedText type="subtitle">Set Encryption Password</ThemedText>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter password"
+                  placeholderTextColor="#666"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirm password"
+                  placeholderTextColor="#666"
+                  secureTextEntry
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                />
+                <TouchableOpacity
+                  style={styles.encryptButton}
+                  onPress={encryptAndSave}
+                  disabled={isEncrypting}
+                >
+                  {isEncrypting ? (
+                    <View style={styles.loadingContainer}>
+                      <ActivityIndicator color="white" />
+                      <ThemedText style={styles.loadingText}>
+                        Please wait, encrypting...
+                      </ThemedText>
+                    </View>
+                  ) : (
+                    <ThemedText>Encrypt & Save</ThemedText>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.retakeButton}
+                  onPress={() => {
+                    setPhoto(null);
+                    setPassword("");
+                    setConfirmPassword("");
+                  }}
+                >
+                  <ThemedText>Retake</ThemedText>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.cameraWrapper}>
+              <CameraView
+                ref={cameraRef}
+                style={styles.camera}
+                facing={"back"}
               />
               <TouchableOpacity
-                style={styles.encryptButton}
-                onPress={encryptAndSave}
-                disabled={isEncrypting}
+                style={styles.shutterButton}
+                onPress={takePhoto}
               >
-                {isEncrypting ? (
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator color="white" />
-                    <ThemedText style={styles.loadingText}>
-                      Please wait, encrypting...
-                    </ThemedText>
-                  </View>
-                ) : (
-                  <ThemedText>Encrypt & Save</ThemedText>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.retakeButton}
-                onPress={() => {
-                  setPhoto(null);
-                  setPassword("");
-                  setConfirmPassword("");
-                }}
-              >
-                <ThemedText>Retake</ThemedText>
+                <View style={styles.shutterButtonInner} />
               </TouchableOpacity>
             </View>
-          </View>
-        ) : (
-          <View style={styles.cameraWrapper}>
-            <CameraView ref={cameraRef} style={styles.camera} facing={"back"} />
-            <TouchableOpacity style={styles.shutterButton} onPress={takePhoto}>
-              <View style={styles.shutterButtonInner} />
-            </TouchableOpacity>
-          </View>
-        )}
-      </ThemedView>
-    </ScrollView>
+          )}
+        </ThemedView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -364,5 +374,9 @@ const styles = StyleSheet.create({
   },
   sourceLink: {
     padding: 8,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff", // or whatever your background color should be
   },
 });

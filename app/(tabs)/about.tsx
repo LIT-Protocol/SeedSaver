@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity, Linking } from "react-native";
 
 import { Collapsible } from "@/components/Collapsible";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -57,6 +57,21 @@ export default function AboutScreen() {
           with different passwords
         </ThemedText>
       </Collapsible>
+
+      <ThemedView style={styles.linksContainer}>
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://litprotocol.com")}
+        >
+          <ThemedText style={styles.link}>Lit Protocol →</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.openURL("https://github.com/lit-protocol/seedsaver")
+          }
+        >
+          <ThemedText style={styles.link}>Source Code →</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
     </ParallaxScrollView>
   );
 }
@@ -71,5 +86,14 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     gap: 8,
+  },
+  linksContainer: {
+    marginTop: 32,
+    gap: 16,
+    paddingBottom: 32,
+  },
+  link: {
+    color: "#2196F3",
+    fontSize: 16,
   },
 });
