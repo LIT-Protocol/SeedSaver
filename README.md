@@ -5,7 +5,15 @@ SeedSaver by [Lit](https://litprotocol.com) helps you securely store photos of y
 ## Installation
 
 1. Install Expo Go from the app store on your device: https://expo.dev/go
-2. Go to this link and scan this QR code: https://expo.dev/preview/update?message=should%20be%20all%20done&updateRuntimeVersion=1.0.0&createdAt=2024-11-27T04%3A20%3A19.821Z&slug=exp&projectId=f9849ac7-b8a8-4c28-bec9-e40e18a13e31&group=dbf742f7-6dd3-4f22-9e23-5b6684683d11
+2. Go to this link and scan this QR code: https://expo.dev/preview/update?message=more%20readme&updateRuntimeVersion=1.0.0&createdAt=2024-11-27T04%3A45%3A20.793Z&slug=exp&projectId=f9849ac7-b8a8-4c28-bec9-e40e18a13e31&group=00b13e2c-6ac6-4dcb-86e0-3fcd7b328354
+
+## Why
+
+Hardware wallets are the most secure way to store crypto, but you have this weird 24 word seed phrase that's hard to store and hard to backup. You shouldn't ever put your seed phrase into a computer, but also, keeping it safe in your house is hard and dangerous. SeedSaver is a way to securely store your an encrypted photo of your seed phrase in a photo that you can put anywhere. The output is a simple HTML file that you can open in any browser which works entirely offline.
+
+One neat trick for opening it securely is to boot your Mac into Recovery Mode and use the built in Safari browser to open the HTML file. This environment should be free of any malware.
+
+Note: If you forget the password you set, your data is lost forever. There is no recovery mechanism.
 
 ## How it Works
 
@@ -23,11 +31,19 @@ To view your seed phrase later, just open the HTML file in any browser and enter
 - The HTML file contains only encrypted data
 - Decryption happens in your browser when you enter the password
 - No data is ever sent to any servers
+- Fully open source, tiny source code, easy to build and publish on your own using Expo Go
+- Uses https://github.com/Hinaser/jscrypto/tree/master fully inlined and bundled, so no dependencies on browser APIs that could change
 
 ## Best Practices
 
 - Use a strong, unique password
 - Store the HTML file in multiple secure locations
 - Keep your password safe but separate from the HTML file
+- Do not forget or lose the password! You will be unable to recover your seed phrase.
 - Test decryption after saving to ensure everything works
-- Consider encrypting multiple photos with different passwords
+
+## Publishing
+
+To publish an update, run `eas update` and go to the expo url printed in the terminal. Click on "preview" and put the preview URL at the top of this README.
+
+To publish your own version of SeedSaver, clone this repo and follow the instructions on the Expo website: https://docs.expo.dev/

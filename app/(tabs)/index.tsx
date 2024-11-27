@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  Linking,
 } from "react-native";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
@@ -157,6 +158,27 @@ export default function HomeScreen() {
 
   return (
     <ScrollView>
+      <ThemedView style={styles.header}>
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://litprotocol.com")}
+          style={styles.logoContainer}
+        >
+          <Image
+            source={require("../../assets/images/lit.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.openURL("https://github.com/lit-protocol/seedsaver")
+          }
+          style={styles.sourceLink}
+        >
+          <ThemedText>Source Code</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
+
       <ThemedView style={styles.cameraContainer}>
         {photo ? (
           <View style={styles.preview}>
@@ -323,5 +345,24 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: "white",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  logoContainer: {
+    flex: 1,
+  },
+  logo: {
+    width: 80,
+    height: 30,
+  },
+  sourceLink: {
+    padding: 8,
   },
 });
