@@ -52,9 +52,9 @@ export default function AboutScreen() {
         <ThemedText>
           • Use a strong, unique password{"\n\n"}• Store the HTML file in
           multiple secure locations{"\n\n"}• Keep your password safe but
-          separate from the HTML file{"\n\n"}• Test decryption after saving to
-          ensure everything works{"\n\n"}• Consider encrypting multiple photos
-          with different passwords
+          separate from the HTML file{"\n\n"}• Do not forget or lose the
+          password! You will be unable to recover your seed phrase.{"\n\n"}•
+          Test decryption after saving to ensure everything works
         </ThemedText>
       </Collapsible>
 
