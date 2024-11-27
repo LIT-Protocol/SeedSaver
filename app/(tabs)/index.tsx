@@ -11,7 +11,11 @@ import {
 } from "react-native";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
-import { AES, Word32Array, PBKDF2, Hex } from "jscrypto";
+import { AES, Word32Array, PBKDF2, Hex, Utf8 } from "jscrypto";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
+import { Asset } from "expo-asset";
+import { readAsStringAsync } from "expo-file-system";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -24,24 +28,47 @@ function deriveKey(password: string, salt: Word32Array): Word32Array {
   });
 }
 
-function encryptData(
-  data: string,
-  key: Word32Array
-): {
-  salt: string;
-  iv: string;
-  encrypted: string;
-} {
-  const salt = Word32Array.random(128 / 8); // 128 bits
-  const iv = Word32Array.random(128 / 8);
-
+function encryptData(data: string, key: Word32Array): string {
   const encrypted = AES.encrypt(data, key);
 
-  return {
-    salt: salt.toString(),
-    iv: iv.toString(),
-    encrypted: encrypted.toString(),
-  };
+  return encrypted.toString();
+}
+
+async function readHtmlTemplateFile(): Promise<string> {
+  const [{ localUri }] = await Asset.loadAsync(
+    require("../../assets/template.html")
+  );
+
+  console.log("localUri:", localUri);
+
+  if (localUri) {
+    return await readAsStringAsync(localUri);
+  }
+
+  throw new Error("Failed to load HTML template file");
+}
+
+async function generateHtmlFile(encryptedData: string, salt: Word32Array) {
+  try {
+    // Read the template file
+    const template = await readHtmlTemplateFile();
+
+    // Replace placeholders with actual data
+    const html = template
+      .replace("ENCRYPTED_DATA_PLACEHOLDER", encryptedData)
+      .replace("SALT_PLACEHOLDER", salt.toString(Hex));
+
+    // Save to a temporary file
+    const tempFile = `${
+      FileSystem.cacheDirectory
+    }encrypted-image-${Date.now()}.html`;
+    await FileSystem.writeAsStringAsync(tempFile, html);
+
+    return tempFile;
+  } catch (error) {
+    console.error("Error generating HTML:", error);
+    throw error;
+  }
 }
 
 export default function HomeScreen() {
@@ -86,20 +113,26 @@ export default function HomeScreen() {
       const key = deriveKey(password, salt);
 
       // Encrypt the image data
-      const { iv, encrypted } = encryptData(photoBase64, key);
+      const encrypted = encryptData(photoBase64, key);
 
-      Alert.alert("Success", "Image encrypted! HTML generation coming next", [
-        {
-          text: "OK",
-          onPress: () => {
-            setPhoto(null);
-            setPhotoBase64(null);
-            setPassword("");
-            setConfirmPassword("");
-            setIsEncrypting(false);
-          },
-        },
-      ]);
+      // Generate and share the HTML file
+      const htmlFile = await generateHtmlFile(encrypted, salt);
+
+      // Share the file
+      await Sharing.shareAsync(htmlFile, {
+        mimeType: "text/html",
+        UTI: `encrypted-image-${new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace(/[T:]/g, "-")}.html`,
+      });
+
+      // Clean up
+      setPhoto(null);
+      setPhotoBase64(null);
+      setPassword("");
+      setConfirmPassword("");
+      setIsEncrypting(false);
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "Failed to encrypt image");
